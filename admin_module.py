@@ -1,11 +1,12 @@
-# admin_module.py - Garden Administrator functions + shared helpers
-# Credits: Adapted modular file handling structure from assignment pseudocode [file:2]
-
 PLOTS_FILE = "plots.txt"
 MEMBERS_FILE = "members.txt"
 BOOKINGS_FILE = "bookings.txt"
 PAYMENTS_FILE = "payments.txt"
 
+#imp functions
+#do after the program
+
+#oepen append file use a
 def ensure_file(filename):
     try:
         f = open(filename, "a")
@@ -13,6 +14,7 @@ def ensure_file(filename):
     except:
         print("Error creating file:", filename)
 
+#read record (use r)
 def read_records(filename):
     ensure_file(filename)
     records = []
@@ -26,6 +28,8 @@ def read_records(filename):
         pass
     return records
 
+
+#recordwrite
 def write_records(filename, records):
     try:
         with open(filename, "w") as f:
@@ -33,6 +37,7 @@ def write_records(filename, records):
                 f.write(",".join(rec) + "\n")
     except:
         print("Error writing to", filename)
+#recordappend
 
 def append_record(filename, record_list):
     try:
@@ -40,10 +45,12 @@ def append_record(filename, record_list):
             f.write(",".join(record_list) + "\n")
     except:
         print("Error appending to", filename)
-
+#generate id for unique function
 def generate_id(prefix, filename):
     records = read_records(filename)
     return prefix + str(len(records) + 1)
+
+#menu begin
 
 def admin_menu():
     while True:
@@ -57,7 +64,6 @@ def admin_menu():
         print("7. Generate garden report")
         print("0. Back")
         choice = input("Enter choice: ").strip()
-
         if choice == "1":
             add_plot()
         elif choice == "2":
@@ -77,15 +83,19 @@ def admin_menu():
         else:
             print("Invalid option.")
 
+
+
+
+#main method definition
 def add_plot():
-    size = input("Enter plot size (Small/Medium/Large): ").strip()
+    size = input("Enter plot size (Small/Medium/Large): ").strip().capitalize()
     if not size:
         print("Plot size cannot be empty.")
         return
     plot_id = generate_id("P", PLOTS_FILE)
     status = "Available"
     append_record(PLOTS_FILE, [plot_id, size, status])
-    print("✓ Plot added with ID:", plot_id)
+    print("Plot added with ID:", plot_id)
 
 def update_plot():
     plots = read_records(PLOTS_FILE)
@@ -94,7 +104,7 @@ def update_plot():
     for i, rec in enumerate(plots):
         if rec[0] == plot_id:
             print("Current: Size =", rec[1], "Status =", rec[2])
-            new_size = input("New size (blank = no change): ").strip()
+            new_size = input("New size (blank = no change): ").strip().capitalize()
             new_status = input("New status (blank = no change): ").strip()
             if new_size:
                 plots[i][1] = new_size
@@ -108,10 +118,12 @@ def update_plot():
     else:
         print("Plot ID not found.")
 
+
 def remove_plot():
     plots = read_records(PLOTS_FILE)
     plot_id = input("Enter plot ID to remove: ").strip().upper()
     new_plots = [rec for rec in plots if rec[0] != plot_id]
+
     if len(new_plots) == len(plots):
         print("Plot ID not found.")
     else:
@@ -137,6 +149,7 @@ def view_all_bookings():
         print(f"ID: {rec[0]} | Plot: {rec[1]} | Member: {rec[2]} | "
               f"Start: {rec[3]} | End: {rec[4]} | Status: {rec[5]}")
 
+
 def view_all_payments():
     payments = read_records(PAYMENTS_FILE)
     print("\nAll Payments:")
@@ -146,6 +159,8 @@ def view_all_payments():
     for rec in payments:
         print(f"ID: {rec[0]} | Booking: {rec[1]} | Amount: {rec[2]} | Date: {rec[3]}")
 
+
+#remember to edit b4 16th
 def generate_garden_report():
     plots = read_records(PLOTS_FILE)
     payments = read_records(PAYMENTS_FILE)
@@ -154,9 +169,11 @@ def generate_garden_report():
     booked = sum(1 for p in plots if p[2] == "Booked")
     available = sum(1 for p in plots if p[2] == "Available")
     income = 0.0
+
     for p in payments:
         try:
-            income += float(p[2])
+            if len(p) >= 6 and p[5].strip().lower() == "paid":
+                income += float(p[3])
         except:
             pass
 

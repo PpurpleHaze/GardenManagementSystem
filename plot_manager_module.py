@@ -54,8 +54,8 @@ def show_available_plots():
 
 def book_plot():
     show_available_plots()
-    plot_id = input("Enter plot ID to book: ").strip()
-    member_id = input("Enter member ID: ").strip()
+    plot_id = input("Enter plot ID to book: ").strip().capitalize()
+    member_id = input("Enter member ID: ").strip().capitalize()
     start_date = input("Enter start date (YYYY-MM-DD): ").strip()
     end_date = input("Enter end date (YYYY-MM-DD): ").strip()
 
@@ -67,7 +67,7 @@ def book_plot():
             break
 
     if found_plot is None or found_plot[2] != "Available":
-        print("✗ Plot not available.")
+        print("Plot not available.")
         return
 
     booking_id = generate_id("B", BOOKINGS_FILE)
@@ -76,7 +76,7 @@ def book_plot():
 
     found_plot[2] = "Booked"
     write_records(PLOTS_FILE, plots)
-    print("✓ Booking created with ID:", booking_id)
+    print("Booking created with ID:", booking_id)
 
 def cancel_booking():
     bookings = read_records(BOOKINGS_FILE)
@@ -102,7 +102,7 @@ def cancel_booking():
             p[2] = "Available"
             break
     write_records(PLOTS_FILE, plots)
-    print("✓ Booking cancelled and plot freed.")
+    print("Booking cancelled and plot freed.")
 
 def return_plot():
     bookings = read_records(BOOKINGS_FILE)
@@ -128,7 +128,7 @@ def return_plot():
             p[2] = "Available"
             break
     write_records(PLOTS_FILE, plots)
-    print("✓ Plot returned and set to Available.")
+    print("plot returned and set to Available.")
 
 def view_current_bookings():
     bookings = read_records(BOOKINGS_FILE)
