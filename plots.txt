@@ -1,3 +1,2 @@
-P001,Available
-P002,Booked
-P003,Booked
+P1,Large,Booked
+P2,Large,Booked
